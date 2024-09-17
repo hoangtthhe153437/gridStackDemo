@@ -1,0 +1,34 @@
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.grid-stack {
+  background-color: #f0f0f0;
+  height: 100vh; /* Chiều cao full màn hình */
+}
+
+.grid-item {
+  background-color: #00f; /* Màu xanh */
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+.grid-stack-item {
+  width: 100px; /* Chiều rộng của mỗi ô lưới */
+  height: 100px; /* Chiều cao của mỗi ô lưới */
+}
+
+.grid-item button,
+.grid-item input {
+  margin-top: 5px;
+  width: 80%; /* Đảm bảo các phần tử bên trong có thể thay đổi kích thước */
+  resize: both; /* Cho phép thay đổi kích thước */
+  overflow: auto; /* Đảm bảo nội dung không bị tràn */
+}
