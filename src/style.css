@@ -5,7 +5,27 @@ body {
   padding: 0;
 }
 
+.sidebar {
+  width: 200px;
+  background-color: #f8f9fa;
+  padding: 10px;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  overflow-y: auto;
+}
+
+.draggable-item {
+  background-color: #007bff;
+  color: #fff;
+  padding: 10px;
+  margin-bottom: 10px;
+  cursor: grab;
+}
+
 .grid-stack {
+  margin-left: 220px; /* Để lưới không bị che bởi sidebar */
   background-color: #f0f0f0;
   height: 100vh; /* Chiều cao full màn hình */
 }
@@ -31,4 +51,9 @@ body {
   width: 80%; /* Đảm bảo các phần tử bên trong có thể thay đổi kích thước */
   resize: both; /* Cho phép thay đổi kích thước */
   overflow: auto; /* Đảm bảo nội dung không bị tràn */
+}
+
+.controls {
+  margin-left: 220px; /* Để các button không bị che bởi sidebar */
+  padding: 10px;
 }

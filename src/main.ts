@@ -5,50 +5,40 @@ import "./style.css";
 document.addEventListener("DOMContentLoaded", () => {
   const grid = GridStack.init({ float: true, resizable: true });
 
-  // Thêm các widget vào lưới với button và input bên trong mỗi thẻ div
-  grid.addWidget({
-    w: 1,
-    h: 1,
-    content: `
-      <div class='grid-item' id='item1'>
-        Item 1
-        <button class="resizable">Button 1</button>
-        <input class="resizable" type="text" placeholder="Input 1">
-      </div>
-    `,
+  // Xử lý kéo thả từ sidebar vào lưới GridStack
+  const draggableItems = document.querySelectorAll(".draggable-item");
+  draggableItems.forEach((item) => {
+    item.setAttribute("draggable", "true");
+    item.addEventListener("dragstart", (event) => {
+      event.dataTransfer?.setData(
+        "text/plain",
+        (event.target as HTMLElement).innerHTML
+      );
+    });
   });
-  grid.addWidget({
-    w: 1,
-    h: 1,
-    content: `
-      <div class='grid-item'>
-        Item 2
-        <button class="resizable">Button 2</button>
-        <input class="resizable" type="text" placeholder="Input 2">
-      </div>
-    `,
+
+  const gridElement = document.querySelector(".grid-stack");
+  gridElement?.addEventListener("dragover", (event) => {
+    event.preventDefault();
   });
-  grid.addWidget({
-    w: 1,
-    h: 1,
-    content: `
-      <div class='grid-item'>
-        Item 3
-        <button class="resizable">Button 3</button>
-        <input class="resizable" type="text" placeholder="Input 3">
-      </div>
-    `,
-  });
-  grid.addWidget({
-    w: 1,
-    h: 1,
-    content: `
-      <div class='grid-item'>
-        Item 4
-        <button class="resizable">Button 4</button>
-        <input class="resizable" type="text" placeholder="Input 4">
-      </div>
-    `,
+
+  gridElement?.addEventListener("drop", (event) => {
+    event.preventDefault();
+    const data = event.dataTransfer?.getData("text/plain");
+    if (data) {
+      const id = `item${grid.engine.nodes.length + 1}`;
+      grid.addWidget({
+        w: 1,
+        h: 1,
+        content: `
+          <div class='grid-item' id='${id}'>
+            ${data}
+            <button class="resizable">Button</button>
+            <input class="resizable" type="text" placeholder="Input">
+          </div>
+        `,
+      });
+    }
   });
 
   // Hàm để lấy thông tin vị trí, kích thước, loại thẻ HTML và màu sắc của các widget và in ra JSON
@@ -69,17 +59,19 @@ document.addEventListener("DOMContentLoaded", () => {
     console.log(JSON.stringify(items, null, 2));
   };
 
-  // Hàm để lấy thông tin chi tiết của một widget cụ thể và các phần tử con bên trong
-  const getItemDetails = (id: string) => {
-    const element = document.getElementById(id);
-    if (element) {
+  // Hàm để lấy thông tin chi tiết của tất cả các widget có cùng tên và các phần tử con bên trong
+  const getItemDetails = (name: string) => {
+    const elements = Array.from(document.querySelectorAll(".grid-item")).filter(
+      (element) => element.textContent?.includes(name)
+    );
+    const itemsDetails = elements.map((element) => {
       const rect = element.getBoundingClientRect();
       const tagName = element.tagName.toLowerCase();
       const backgroundColor = window.getComputedStyle(element).backgroundColor;
 
       // Tạo object chứa thông tin chi tiết của thẻ cha
       const itemDetails = {
-        id: id,
+        id: element.id,
         width: rect.width,
         height: rect.height,
         top: rect.top,
@@ -118,16 +110,16 @@ document.addEventListener("DOMContentLoaded", () => {
         });
       });
 
-      // In object dưới dạng JSON
-      console.log(JSON.stringify(itemDetails, null, 2));
-    } else {
-      console.log(`Element with id ${id} not found.`);
-    }
+      return itemDetails;
+    });
+
+    // In object dưới dạng JSON
+    console.log(JSON.stringify(itemsDetails, null, 2));
   };
 
   // Thêm sự kiện click cho nút
   document.getElementById("print-json")?.addEventListener("click", printJson);
   document
     .getElementById("get-item-details")
-    ?.addEventListener("click", () => getItemDetails("item1"));
+    ?.addEventListener("click", () => getItemDetails("Item 1"));
 });
